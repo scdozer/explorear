@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Three.JS</title>
+</head>
+
+<body>
+    <canvas id="Canvas"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/106/three.min.js"></script>
+
+    <script>
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('Canvas'), antialias: true });
+
+        renderer.setClearColor(13362943);
+        renderer.setPixelRatio(window.decivePicelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 3000);
+
+        var scene = new THREE.Scene();
+
+        var pyramidGeometry = new THREE.CylinderGeometry(0, 0.8, 2, 4);
+        var pyramidMaterial = new THREE.MeshLambertMaterial({ color: 0xF3FFE2 });
+        var pyramidMesh = new THREE.Mesh(pyramidGeometry, pyramidMaterial);
+
+        pyramidMesh.position.set(0, 2, -10);
+        scene.add(pyramidMesh);
+
+        // New Material
+        var boxMaterial = new THREE.MeshNormalMaterial({
+            color: 0xff0000,
+            transparent: true,
+            opacity: 1
+        });
+        var planeMaterial = new THREE.MeshPhongMaterial({
+            color: 0xF3FFE2,
+            specular: 0xff0000,
+            shininess: 50
+        });
+        var circleMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0098877,
+            roughness: 90.0,
+            metalness: 0.2
+        });
+
+        var sphereMaterial = new THREE.LineBasicMaterial({
+            color: 0x888888
+
+        })
+
+        var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+        // var boxMaterial = new THREE.MeshBasicMaterial();
+        var boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+        boxMesh.position.set(-0.9, 0, -6);
+        scene.add(boxMesh);
+
+        var sphereGeometry = new THREE.SphereGeometry(0.5);
+        // var sphereMaterial = new THREE.MeshBasicMaterial({ wireframe: true, color: 0x000000 });
+        // var sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        var sphereMesh = new THREE.Line(sphereGeometry, sphereMaterial);
+        sphereMesh.position.set(0.9, 0, -6);
+        scene.add(sphereMesh);
+
+        var circleGeometry = new THREE.CircleBufferGeometry(0.5);
+        // var circleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        var circleMesh = new THREE.Mesh(circleGeometry, circleMaterial);
+        circleMesh.position.set(2, 0, -6);
+        circleMesh.rotation.set(0, 0, 5);
+        scene.add(circleMesh);
+
+
+        var paraFunction = function (a, b, target) {
+            var x = -5 + 5 * a;
+            var y = -5 + 5 * b;
+            var z = (Math.sin(a * Math.PI) + Math.sin(b * Math.PI)) * -7;
+            target.set(x, y, z);
+            return new THREE.Vector3(x, y, z);
+        }
+
+        var paraGeometry = new THREE.ParametricGeometry(paraFunction, 8, 8);
+        var paraMaterial = new THREE.MeshLambertMaterial({ color: 0xF3FFE2 });
+        var paraMesh = new THREE.Mesh(paraGeometry, paraMaterial);
+        paraMesh.position.set(0, -2, -100);
+        scene.add(paraMesh);
+
+
+        var planeGeometry = new THREE.PlaneGeometry(10, 10);
+        // var planeMaterial = new THREE.MeshBasicMaterial();
+        var planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+        planeMesh.position.set(0, -20, -100);
+        scene.add(planeMesh);
+
+        var lightOne = new THREE.AmbientLight(0xfff, 0.5);
+        scene.add(lightOne);
+
+        var lightTwo = new THREE.PointLight(0xfff, 0.5);
+        scene.add(lightTwo);
+
+
+        requestAnimationFrame(render);
+
+        var delta = 0;
+        function render() {
+            pyramidMesh.rotation.y += 0.1;
+            paraMesh.rotation.x += 0.1;
+            paraMesh.rotation.y += 0.1;
+
+            delta += 0.1;
+            planeGeometry.vertices[0].z = -25 + Math.sin(delta) * 50;
+            planeGeometry.verticesNeedUpdate = true;
+            renderer.render(scene, camera);
+            requestAnimationFrame(render);
+        }
+
+    </script>
+</body>
+
+</html>
